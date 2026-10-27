@@ -1,0 +1,468 @@
+I. MỤC LỤC 
+PHẦN ĐẦU BÁO CÁO (Khoảng 4 trang – Đánh số i, ii, iii, iv)
+* Trang bìa chính và Trang bìa phụ: Ghi đúng tên Trường Công nghệ - ĐHKTQD, Khoa CNTT, môn An toàn và bảo mật thông tin, tên đề tài và thời gian thực hiện (01/10/2026 – 30/11/2026)
+* Danh sách thành viên & Bảng phân công nhiệm vụ: Kẻ bảng gồm Họ tên, MSSV, Lớp, Phân công công việc, Đóng góp (100%) và cột Ký tên 
+* Lời cảm ơn & Lời nói đầu: Cảm ơn giảng viên và giới thiệu khái quát về đề tài hệ chữ ký điện tử MHK 
+* Trang Mục lục, Danh mục hình ảnh, Danh mục bảng biểu: Tạo khung mục lục tự động trước, cập nhật lại số trang sau khi chèn ảnh phần mềm 
+CHƯƠNG 1: GIỚI THIỆU PHÁT BIỂU ĐỀ TÀI (Khoảng 4–5 trang)
+
+
+* 1.1. Lý do lựa chọn đề tài: Nêu sự bùng nổ của giao dịch điện tử, rủi ro giả mạo dữ liệu và vai trò của chữ ký số trong việc bảo vệ tính toàn vẹn, xác thực thông tin.
+* 1.2. Mục tiêu và câu hỏi nghiên cứu: Xác định mục tiêu nghiên cứu cơ sở toán học của hệ chữ ký MHK và xây dựng phần mềm minh họa trực quan từng bước tính toán trên màn hình giao diện.
+* 1.3. Đối tượng và phạm vi nghiên cứu:
+   * 1.3.1. Đối tượng nghiên cứu: Hệ chữ ký điện tử dựa trên bài toán xếp ba lô Merkle–Hellman (MHK), hồ sơ thuật toán mhk-demo-preimage-v1 và ứng dụng giao diện Python.
+   * 1.3.2. Phạm vi nghiên cứu: Minh họa học thuật với bộ tham số nhỏ để giải thích rõ cơ chế tạo khóa, ký, xác thực và phân tích giới hạn bảo mật thực tế.
+* 1.4. Phương pháp nghiên cứu: Phương pháp nghiên cứu lý thuyết toán học mật mã kết hợp thực nghiệm xây dựng và kiểm thử phần mềm.
+* 1.5. Hướng giải quyết đề tài:
+   * 1.5.1. Tóm tắt ý tưởng: Dùng dãy siêu tăng làm khóa bí mật để giải nhanh bài toán xếp ba lô theo thuật toán tham lam, che giấu bằng phép nhân mô-đun để tạo khóa công khai, và dùng hàm băm SHA-256 kèm bộ đếm  để đưa văn bản  về số nguyên mục tiêu.
+   * 1.5.2. Xây dựng mô hình hoạt động của hệ thống: Vẽ sơ đồ luồng dữ liệu từ lúc Người ký nhập tham số tạo khóa , ký văn bản  tạo chữ ký  cho đến lúc Người kiểm tra dùng  để xác thực.
+
+
+CHƯƠNG 2: TRÌNH BÀY NỘI DUNG NGHIÊN CỨU LÝ THUYẾT CỦA ĐỀ TÀI (Khoảng 9–10 trang) 
+
+
+   * 2.1. Tổng quan về An toàn thông tin, Hệ mật mã và Chữ ký số:
+   * 2.1.1. Hệ mật mã và 4 thuộc tính an toàn thông tin: Tính bí mật, tính toàn vẹn, tính xác thực và tính không thể chối từ.
+   * 2.1.2. Mô hình Tam giác bảo mật CIA: Phân tích 3 trụ cột Bảo mật (Confidentiality), Toàn vẹn (Integrity) và Sẵn sàng (Availability).
+   * 2.1.3. Mã khóa đối xứng và Mã khóa công khai: Đặc điểm của mã hóa đối xứng (DES, AES) và bước tiến của mã hóa công khai (RSA).
+   * 2.1.4. Chữ ký số và Hàm băm mật mã: Cơ chế ký thông qua hàm băm và làm rõ các nhầm lẫn phổ biến (chữ ký số là vector bit/con số toán học chứ không phải hình ảnh chữ ký tay; ký số không làm ẩn nội dung văn bản).
+   * 2.2. Bài toán Xếp ba lô (Knapsack Problem) và Dãy siêu tăng:
+   * 2.2.1. Bài toán Knapsack / Subset-Sum: Bài toán chọn tập con các số sao cho tổng bằng giá trị yêu cầu, biểu diễn qua vector nhị phân $x = (x_1, x_2, \dots, x_n)$.
+   * 2.2.2. Dãy siêu tăng (Superincreasing Sequence) và Thuật toán tham lam: Định nghĩa dãy số có mỗi phần tử lớn hơn tổng các phần tử đứng trước và cách giải nhanh từ số lớn nhất về nhỏ nhất.
+   * 2.2.3. Cơ chế Cửa sập (Trapdoor) trong hệ MHK: Cách biến đổi dãy siêu tăng dễ giải thành dãy công khai khó giải thông qua phép toán mô-đun.
+   * 2.3. Mô tả chi tiết hoạt động của thuật toán chữ ký điện tử MHK:
+   * 2.3.1. Kiểm tra tham số đầu vào và Thuật toán Tạo khóa: Điều kiện của , dãy siêu tăng , mô-đun , số nhân  nguyên tố cùng nhau với  (); công thức tính khóa công khai $B_i = (r \times W_i) \bmod q$, tổng  và nghịch đảo $u = r^{-1} \bmod q$.
+   * 2.3.2. Thuật toán Ký văn bản : Quy tắc chuyển chuỗi  sang mảng byte UTF-8, ghép gói dữ liệu frame (nhãn MHK-DEMO-v1, độ dài byte, nội dung , bộ đếm ), băm SHA-256 lấy dư cho  để có đại diện , tính $t = (u \times y_k) \bmod q$, giải tham lam trên  tìm vector  và đối chiếu lại tổng công khai .
+   * 2.3.3. Thuật toán Xác thực chữ ký: Quy trình kiểm tra định dạng, tính lại  từ  và , tính tổng  từ khóa công khai  và so sánh  (hoàn toàn không dùng khóa bí mật).
+      * 2.4. Ví dụ minh họa chi tiết hoạt động của thuật toán:
+      * 2.4.1. Minh họa bước tạo khóa: Lập bảng tính chi tiết với bộ số .
+      * 2.4.2. Minh họa bước ký văn bản  "Tôi đồng ý": Lập bảng giải trình 3 lượt thử bộ đếm  (bị loại vì tổng công khai ),  (bị loại vì giải trên  dư ) và  (thành công với ).
+      * 2.4.3. Minh họa bước xác thực và phát hiện giả mạo: Bảng kiểm tra chữ ký hợp lệ () và thử nghiệm sửa văn bản thành "Tôi không đồng ý" () hoặc sửa bit đầu của chữ ký thành  ().
+         * 2.5. Phân tích độ an toàn và giới hạn của hệ chữ ký MHK:
+         * Trình bày tấn công đa thức của Adi Shamir (1984) vào hệ MHK cơ bản và phân tích phản ví dụ giả mạo chữ ký khi miền băm rút gọn nhỏ ( giá trị) với .
+
+
+CHƯƠNG 3: XÂY DỰNG CHƯƠNG TRÌNH PHẦN MỀM (Khoảng 9–10 trang)
+
+* 3.1. Phân tích yêu cầu và Thiết kế kiến trúc chương trình
+   * 3.1.1. Công nghệ sử dụng: Ngôn ngữ Python và thư viện giao diện đồ họa PySide6
+      Để hiện thực hóa hệ chữ ký điện tử dựa trên bài toán xếp ba lô Merkle–Hellman theo hồ sơ thuật toán chuẩn hóa mhk-demo-preimage-v1 và đáp ứng trọn vẹn các yêu cầu tối thiểu của đề tài (nhập tham số đầu vào; tính toán và hiển thị tập khóa công khai/bí mật; tính toán và hiển thị chữ ký lên văn bản M; kiểm tra xác thực chữ ký độc lập; hiển thị toàn bộ các bước tính toán trung gian trên màn hình giao diện), chương trình phần mềm được xây dựng trên nền tảng công nghệ chuẩn như sau:
+      - Ngôn ngữ lập trình: Python 3.11+ (tương thích hoàn toàn với Python 3.10, 3.11, 3.12). Python hỗ trợ kiểu số nguyên độ chính xác tùy ý (arbitrary-precision integer int) ngay trong nhân ngôn ngữ, cho phép thực hiện các phép toán số học mô-đun lớn, thuật toán Euclid mở rộng và chuyển đổi giá trị băm 256-bit (SHA-256) sang số nguyên không dấu mà không xảy ra hiện tượng tràn số (integer overflow).
+      - Thư viện giao diện đồ họa (GUI Framework): PySide6 (Qt for Python 6.6+). PySide6 cung cấp hệ thống điều khiển bảng biểu chuyên sâu (QTableWidget, QTabWidget, QSplitter, QPlainTextEdit) giúp hiển thị rõ ràng đồng thời cả kết quả cuối cùng lẫn bảng truy vết từng bước tính toán trung gian (Trace Table).
+      - Thư viện mật mã và chuẩn hóa dữ liệu: Sử dụng các mô-đun chuẩn trong Python Standard Library gồm hashlib (băm mật mã SHA-256 theo chuẩn NIST FIPS 180-4), dataclasses (đóng gói đối tượng truyền dữ liệu bất biến frozen=True), json (lưu trữ và trao đổi tệp cấu hình khóa/chữ ký theo định dạng UTF-8), và unittest / pytest (kiểm thử đơn vị tự động).
+
+      Bảng 3.1a. Ma trận ánh xạ yêu cầu đề tài sang phân hệ chức năng phần mềm:
+      +----------------+--------------------------------------------------+--------------------------------------------------+--------------------------------------------------+
+      | Mã yêu cầu     | Nội dung yêu cầu theo đề bài                     | Quy tắc xử lý toán học (mhk-demo-preimage-v1)    | Thành phần hiển thị trên màn hình giao diện      |
+      +----------------+--------------------------------------------------+--------------------------------------------------+--------------------------------------------------+
+      | Yêu cầu (a)    | Cho phép nhập các tham số đầu vào của hệ chữ ký  | Kiểm tra 4 điều kiện: w_i > 0; dãy siêu tăng     | Màn hình 1: Ô nhập n, W, q, r, M; Bảng kiểm tra  |
+      |                | trên màn hình giao diện.                         | w_i > sum(w_1..w_{i-1}); q > sum(W); gcd(r,q)=1. | chi tiết 4 điều kiện toán học (PASS / FAIL).     |
+      +----------------+--------------------------------------------------+--------------------------------------------------+--------------------------------------------------+
+      | Yêu cầu (b)    | Tính toán và hiển thị tập các khóa công khai,    | Tính u = r^{-1} mod q bằng Euclid mở rộng;       | Màn hình 1: Khung Khóa công khai pk=(B, T);      |
+      |                | khóa bí mật của hệ chữ ký.                       | b_i = (r * w_i) mod q; T = sum(b_i).             | Khung Khóa bí mật sk=(W, q, r, u); Bảng tính b_i.|
+      +----------------+--------------------------------------------------+--------------------------------------------------+--------------------------------------------------+
+      | Yêu cầu (c)    | Tính toán và hiển thị chữ ký lên văn bản M.      | Đóng gói Frame UTF-8; duyệt k in [0, 4095];      | Màn hình 2: Khung thông tin Frame byte; Bảng     |
+      |                |                                                  | y_k = SHA256(Frame) mod (T+1); t=(u*y_k) mod q;  | Trace Table 6 cột theo dõi từng k; Bảng giải     |
+      |                |                                                  | giải tham lam trên W; kiểm tra sum(b_i*x_i)=y_k. | tham lam ngược i=n..1; Chữ ký sigma=(k, x).      |
+      +----------------+--------------------------------------------------+--------------------------------------------------+--------------------------------------------------+
+      | Yêu cầu (d)    | Kiểm tra xác thực chữ ký đã ký lên văn bản M.    | Chỉ nhận M, pk=(B,T) và sigma=(k,x), không dùng  | Màn hình 3: Ô nhập M, k, vector x; Bảng tính     |
+      |                |                                                  | khóa bí mật sk; tính lại y_k và v=sum(b_i*x_i);  | từng phần tử b_i * x_i; Trạng thái xác thực      |
+      |                |                                                  | đối chiếu v == y_k.                              | VALID / INVALID / FORMAT_ERROR.                  |
+      +----------------+--------------------------------------------------+--------------------------------------------------+--------------------------------------------------+
+      | Yêu cầu (*)    | Hiển thị kết quả các bước quá trình tính toán và | Lưu vết bất biến mọi bước trung gian kèm cơ chế  | Bảng Trace Table 6 cột, Bảng giải tham lam và    |
+      |                | kết quả cuối cùng trên màn hình giao diện.       | Snapshot Revision chống hiển thị dữ liệu cũ.     | thanh trạng thái đồng bộ Snapshot Rev #.         |
+      +----------------+--------------------------------------------------+--------------------------------------------------+--------------------------------------------------+
+
+   * 3.1.2. Kiến trúc 4 tầng của phần mềm
+      Chương trình được thiết kế theo mô hình Kiến trúc phân tầng sạch (4-Tier Clean Architecture), đảm bảo nguyên lý tách biệt trách nhiệm (Separation of Concerns): lõi toán học mật mã hoàn toàn độc lập với thư viện giao diện đồ họa, giúp dễ dàng kiểm thử tự động và chống rò rỉ khóa bí mật sang quy trình xác thực.
+      - Tầng 1 – Presentation Layer (Tầng Giao diện - presentation/main_window.py): Chịu trách nhiệm hiển thị 4 màn hình chức năng, tiếp nhận dữ liệu từ người dùng, hiển thị các bảng trung gian (bảng kiểm tra điều kiện tham số, bảng tạo khóa b_i, bảng Trace Table 6 cột của vòng lặp bộ đếm k, bảng giải tham lam ngược và bảng đối chiếu xác thực). Tầng này không chứa bất kỳ phép tính mật mã nào.
+      - Tầng 2 – Application Layer (Tầng Điều phối nghiệp vụ - application/coordinator.py): Đóng vai trò trung gian điều phối các ca sử dụng (Use Cases): Kiểm tra tham số & Tạo khóa, Ký văn bản M, Xác thực chữ ký độc lập, Nạp cấu hình mẫu (Preset) và Chạy bộ kiểm thử tự động. Tầng này quản lý bộ đếm phiên bản dữ liệu (Snapshot Revision): mỗi khi người dùng chỉnh sửa ô nhập liệu nhưng chưa bấm nút thực thi lại, hệ thống tự động đánh dấu cảnh báo "STALE RESULT (Dữ liệu đầu vào đã thay đổi)" để ngăn ngừa nhầm lẫn giữa tham số mới và kết quả cũ.
+      - Tầng 3 – Domain Layer (Tầng Lõi toán học MHK độc lập - domain/mhk_engine.py): Cài đặt thuần túy toàn bộ các thuật toán của hồ sơ mhk-demo-preimage-v1: kiểm tra dãy siêu tăng, thuật toán Euclid mở rộng tìm gcd(r, q) và nghịch đảo u = r^{-1} mod q, đóng gói khung dữ liệu nhị phân (canonical framing), hàm băm SHA-256 rút gọn y_k, giải bài toán xếp ba lô siêu tăng theo thuật toán tham lam, vòng lặp tìm bộ đếm k có bước tự kiểm chứng (self-verification), và hàm xác thực công khai. Đặc biệt, hàm verify_signature() được thiết kế với chữ ký hàm chỉ nhận (message_str, public_key_B, public_key_T, k, signature_x), tuyệt đối không nhận khóa bí mật sk=(W, q, r, u).
+      - Tầng 4 – Infrastructure Layer (Tầng Hạ tầng lưu trữ - infrastructure/json_repository.py): Đảm nhiệm việc tuần tự hóa (serialization), đọc/ghi tệp cấu hình khóa và gói chữ ký ra định dạng JSON chuẩn UTF-8. Khi xuất gói chữ ký để gửi cho Người kiểm tra, tầng này chỉ xuất thông điệp M, khóa công khai pk=(B, T) và chữ ký sigma=(k, x), tuyệt đối loại bỏ các trường khóa bí mật W, q, r, u.
+
+      [Chèn Hình 3.1: Sơ đồ kiến trúc 4 tầng của phần mềm hệ chữ ký điện tử MHK (Tệp ảnh trong dự án: /assets/report_figures/hinh_3_1_architecture.svg)]
+
+   * 3.1.3. Thiết kế 4 màn hình giao diện và Bảng quá trình tính toán (Trace Table)
+      Giao diện phần mềm được bố cục khoa học gồm thanh trạng thái đồng bộ phía trên và 4 màn hình chức năng chính:
+      1. Màn hình 1 – Tham số & Sinh khóa (Thực hiện Yêu cầu a, b):
+         - Khu vực nhập liệu: Ô nhập số phần tử n, ô nhập dãy siêu tăng W = (w_1, ..., w_n) phân tách bằng dấu phẩy, ô nhập mô-đun q, ô nhập số nhân r, thanh chọn nhanh các bộ tham số mẫu và nút bấm "Kiểm tra Tham số & Tạo khóa".
+         - Khu vực kết quả: Bảng kiểm tra 4 điều kiện toán học đầu vào; Khung hiển thị Khóa công khai pk = (B, T); Khung hiển thị Khóa bí mật sk = (W, q, r, u); và Bảng chi tiết từng bước tính b_i = (r * w_i) mod q với i = 1..n.
+      2. Màn hình 2 – Ký số văn bản M (Thực hiện Yêu cầu c):
+         - Khu vực nhập liệu: Ô nhập văn bản cần ký M (hỗ trợ đầy đủ tiếng Việt UTF-8), hiển thị tự động độ dài chuỗi theo byte (len(M_bytes)), cấu trúc khung dữ liệu băm b"MHK-DEMO-v1\x00" || len(M_bytes) || M_bytes || k, giới hạn bộ đếm max_counter = 4096 và nút bấm "Thực hiện Ký số Văn bản M".
+         - Khu vực kết quả: Khung hiển thị chữ ký tìm được sigma = (k, x), giá trị SHA-256 hex, y_k, t, tổng đối chiếu v = sum(b_i * x_i); Bảng giải tham lam ngược trên dãy siêu tăng W từ i = n về 1; và Bảng quá trình tính toán (Trace Table) gồm đúng 6 cột chuẩn:
+           + Cột (1) Bộ đếm k: Giá trị bộ đếm ở từng lượt thử (k = 0, 1, 2, ...).
+           + Cột (2) y_k = H_k(M) mod (T+1): Giá trị đại diện băm rút gọn của văn bản M tại bộ đếm k.
+           + Cột (3) t = (u * y_k) mod q: Giá trị mục tiêu sau khi khử nhân mô-đun bằng nghịch đảo bí mật u.
+           + Cột (4) Nghiệm x trên W (phần dư): Vector nhị phân x = (x_1, ..., x_n) thu được khi giải tham lam trên W và phần dư còn lại t_rem.
+           + Cột (5) Tổng công khai v = sum(b_i * x_i): Tổng trọng số tính trên khóa công khai B để đối chiếu với y_k.
+           + Cột (6) Kết luận lượt thử: Ghi rõ trạng thái CHẤP NHẬN (ACCEPTED) hoặc LOẠI (REJECTED) kèm lý do toán học cụ thể (ví dụ: loại do phần dư t_rem != 0 hoặc do tổng công khai v != y_k).
+      3. Màn hình 3 – Xác thực chữ ký (Thực hiện Yêu cầu d):
+         - Khu vực nhập liệu độc lập: Ô nhập văn bản cần kiểm tra M, ô hiển thị khóa công khai B và tổng T, ô nhập bộ đếm k, ô nhập vector chữ ký x = (x_1, ..., x_n), các nút thử nghiệm nhanh (Nạp chữ ký vừa tạo, Giả mạo nội dung văn bản M, Giả mạo bit chữ ký x, Nhập sai định dạng) và nút bấm "Thực hiện Kiểm tra Xác thực".
+         - Khu vực kết quả: Bảng đối chiếu từng bước tính lại y_k từ (M, k) và tổng v = sum(b_i * x_i), hộp kết luận trạng thái xác thực (VALID, INVALID, hoặc FORMAT_ERROR).
+      4. Màn hình 4 – Kịch bản Kiểm thử, Phản ví dụ & Hướng dẫn:
+         - Tích hợp công cụ chạy tự động toàn bộ các kịch bản kiểm thử chuẩn (TC-01 đến TC-04), kịch bản minh họa phản ví dụ giả mạo chữ ký khi miền băm nhỏ (k = 123), cùng chức năng Xuất/Nhập tệp JSON.
+
+      Bảng 3.1b. Đặc tả 6 mã trạng thái kết quả chuẩn hóa của hệ thống:
+      +----------------------+----------------------------------------+-------------------------------------------------------------------+
+      | Mã trạng thái        | Phân hệ áp dụng                        | Ý nghĩa và điều kiện kích hoạt                                    |
+      +----------------------+----------------------------------------+-------------------------------------------------------------------+
+      | VALID                | Tạo khóa / Ký văn bản / Xác thực       | Tham số hợp lệ; Ký thành công (t_rem=0 và v=y_k); hoặc Xác thực   |
+      |                      |                                        | chữ ký khớp hoàn toàn (v == y_k).                                 |
+      +----------------------+----------------------------------------+-------------------------------------------------------------------+
+      | INVALID              | Xác thực chữ ký                        | Định dạng đầu vào đúng nhưng tổng công khai v = sum(b_i*x_i)      |
+      |                      |                                        | khác giá trị băm mục tiêu y_k (văn bản M hoặc chữ ký x bị sửa).   |
+      +----------------------+----------------------------------------+-------------------------------------------------------------------+
+      | FORMAT_ERROR         | Tạo khóa / Ký văn bản / Xác thực       | Dữ liệu sai quy cách: n != len(W), W không siêu tăng, q <= sum(W),|
+      |                      |                                        | gcd(r,q) != 1, k ngoài khoảng [0, 4095], hoặc x_i không thuộc {0,1}|
+      +----------------------+----------------------------------------+-------------------------------------------------------------------+
+      | NOT_FOUND            | Ký văn bản M                           | Đã duyệt hết k in [0, max_counter - 1] (4096 lượt) nhưng không có |
+      |                      |                                        | lượt nào đồng thời thỏa mãn t_rem = 0 và sum(b_i*x_i) = y_k.      |
+      +----------------------+----------------------------------------+-------------------------------------------------------------------+
+      | TIME_LIMIT/CANCELLED | Ký văn bản M                           | Quá trình duyệt bộ đếm k vượt quá thời gian giới hạn hoặc người   |
+      |                      |                                        | dùng chủ động bấm nút dừng tác vụ.                                |
+      +----------------------+----------------------------------------+-------------------------------------------------------------------+
+      | UNSUPPORTED_PROFILE  | Nhập tệp JSON / Cấu hình               | Mã hồ sơ thuật toán (profile) không khớp với chuẩn                |
+      |                      |                                        | "mhk-demo-preimage-v1".                                           |
+      +----------------------+----------------------------------------+-------------------------------------------------------------------+
+
+* 3.2. Cài đặt thử nghiệm chương trình phần mềm
+   * 3.2.1. Tổ chức thư mục mã nguồn dự án
+      Mã nguồn chương trình Python được đóng gói trong thư mục dự án mhk_signature_app/ (nằm trong tệp nén .rar nộp kèm báo cáo) với cấu trúc phân tách rõ ràng theo đúng kiến trúc 4 tầng:
+      ```text
+      mhk_signature_app/
+      ├── README.md                       # Tài liệu hướng dẫn cài đặt và chạy chương trình
+      ├── requirements.txt                # Danh sách thư viện phụ thuộc (PySide6>=6.6.0, pytest>=8.0.0)
+      ├── main.py                         # Điểm khởi chạy chính của ứng dụng giao diện (Entry Point)
+      ├── domain/
+      │   ├── __init__.py
+      │   └── mhk_engine.py               # Tầng Domain: Thuật toán kiểm tra tham số, Tạo khóa, Ký, Xác thực
+      ├── application/
+      │   ├── __init__.py
+      │   └── coordinator.py              # Tầng Application: Điều phối Use Case, Preset và Snapshot Revision
+      ├── infrastructure/
+      │   ├── __init__.py
+      │   └── json_repository.py          # Tầng Infrastructure: Xuất/Nhập JSON, kiểm tra Schema & bảo vệ sk
+      ├── presentation/
+      │   ├── __init__.py
+      │   └── main_window.py              # Tầng Presentation: Giao diện PySide6 (4 màn hình + Trace Table)
+      └── tests/
+          └── test_mhk_engine.py          # Bộ kiểm thử đơn vị tự động (Unit Tests cho TC-01..TC-05)
+      ```
+
+   * 3.2.2. Giải thích các đoạn mã nguồn cốt lõi
+      Dưới đây là các đoạn mã nguồn Python cốt lõi trong tệp domain/mhk_engine.py hiện thực hóa chính xác đặc tả toán học của đề tài:
+
+      (1) Đoạn mã kiểm tra tham số đầu vào và Thuật toán Tạo khóa (Yêu cầu a, b):
+      ```python
+      from dataclasses import dataclass
+      from typing import List, Tuple, Optional
+      import hashlib
+
+      PROFILE_ID = "mhk-demo-preimage-v1"
+      DEFAULT_MAX_COUNTER = 4096
+
+      def extended_gcd(a: int, b: int) -> Tuple[int, int, int]:
+          """Thuật toán Euclid mở rộng: trả về (g, x, y) sao cho a*x + b*y = g = gcd(a, b)."""
+          old_r, r = a, b
+          old_s, s = 1, 0
+          old_t, t = 0, 1
+          while r != 0:
+              quotient = old_r // r
+              old_r, r = r, old_r - quotient * r
+              old_s, s = s, old_s - quotient * s
+              old_t, t = t, old_t - quotient * t
+          return old_r, old_s, old_t
+
+      def mod_inverse(r: int, q: int) -> Optional[int]:
+          """Tính nghịch đảo nhân u = r^{-1} mod q. Trả về None nếu gcd(r, q) != 1."""
+          if q <= 1:
+              return None
+          g, x, _ = extended_gcd(r % q, q)
+          if g != 1:
+              return None
+          return (x % q + q) % q
+
+      def validate_and_generate_keys(n: int, W: List[int], q: int, r: int) -> dict:
+          """Kiểm tra 4 điều kiện toán học và sinh cặp khóa pk=(B, T), sk=(W, q, r, u)."""
+          if n <= 0 or len(W) != n:
+              return {"status": "FORMAT_ERROR", "reason": f"Chiều dài dãy W ({len(W)}) khác n ({n})."}
+          running_sum = 0
+          for idx, w_i in enumerate(W, start=1):
+              if w_i <= 0:
+                  return {"status": "FORMAT_ERROR", "reason": f"Phần tử w_{idx}={w_i} phải nguyên dương."}
+              if w_i <= running_sum:
+                  return {"status": "FORMAT_ERROR", "reason": f"Vi phạm siêu tăng tại w_{idx}={w_i} <= {running_sum}."}
+              running_sum += w_i
+          if q <= running_sum:
+              return {"status": "FORMAT_ERROR", "reason": f"Mô-đun q={q} phải lớn hơn tổng sum(W)={running_sum}."}
+          u = mod_inverse(r, q)
+          if u is None:
+              return {"status": "FORMAT_ERROR", "reason": f"gcd(r={r}, q={q}) != 1 nên không tồn tại u = r^-1 mod q."}
+          B = [((r % q) * w_i) % q for w_i in W]
+          T = sum(B)
+          return {
+              "status": "VALID",
+              "public_key": {"B": B, "T": T},
+              "secret_key": {"W": list(W), "q": q, "r": r, "u": u},
+          }
+      ```
+      Giải thích: Hàm `extended_gcd(a, b)` thực hiện thuật toán Euclid mở rộng với độ phức tạp $O(\log q)$ để tìm ước chung lớn nhất và hệ số Bézout, từ đó hàm `mod_inverse(r, q)` xác định duy nhất nghịch đảo nhân $u = r^{-1} \bmod q \in [1, q-1]$. Hàm `validate_and_generate_keys()` kiểm tra tuần tự 4 điều kiện: tính nguyên dương $w_i > 0$, tính chất siêu tăng $w_i > \sum_{j=1}^{i-1} w_j$, điều kiện mô-đun $q > \sum_{i=1}^n w_i$, và điều kiện nguyên tố cùng nhau $\gcd(r, q) = 1$. Khi hợp lệ, hàm tính từng phần tử khóa công khai $b_i = (r \cdot w_i) \bmod q$, tổng $T = \sum_{i=1}^n b_i$ và trả về hai tập khóa tách biệt $pk = (B, T)$ và $sk = (W, q, r, u)$.
+
+      (2) Đoạn mã đóng gói khung dữ liệu chuẩn, băm SHA-256 và Thuật toán Ký văn bản M (Yêu cầu c):
+      ```python
+      def build_canonical_frame(message_bytes: bytes, k: int) -> bytes:
+          """Đóng gói frame chuẩn: b'MHK-DEMO-v1\\x00' || len(M_bytes)_8B_BE || M_bytes || k_8B_BE."""
+          prefix = b"MHK-DEMO-v1\x00"
+          length_be = len(message_bytes).to_bytes(8, byteorder="big", signed=False)
+          counter_be = k.to_bytes(8, byteorder="big", signed=False)
+          return prefix + length_be + message_bytes + counter_be
+
+      def compute_hash_target(message_bytes: bytes, k: int, T: int) -> Tuple[str, int]:
+          """Tính SHA-256 của frame và rút gọn y_k = int.from_bytes(digest, 'big') % (T + 1)."""
+          frame = build_canonical_frame(message_bytes, k)
+          digest = hashlib.sha256(frame).digest()
+          digest_hex = digest.hex()
+          y_k = int.from_bytes(digest, byteorder="big", signed=False) % (T + 1)
+          return digest_hex, y_k
+
+      def solve_superincreasing_knapsack(W: List[int], target_t: int) -> Tuple[List[int], int]:
+          """Giải tham lam từ w_n về w_1 trên dãy siêu tăng W. Trả về (vector x, phần dư t_rem)."""
+          n = len(W)
+          x = [0] * n
+          rem = target_t
+          for idx in range(n - 1, -1, -1):
+              if rem >= W[idx]:
+                  x[idx] = 1
+                  rem -= W[idx]
+          return x, rem
+
+      def sign_message(message_str: str, W: List[int], q: int, r: int, u: int,
+                       B: List[int], T: int, max_counter: int = DEFAULT_MAX_COUNTER) -> dict:
+          """Thuật toán ký văn bản M có lưu vết đầy đủ từng lượt thử bộ đếm k (Trace Table)."""
+          message_bytes = message_str.encode("utf-8")
+          trace_rows = []
+          for k in range(max_counter):
+              digest_hex, y_k = compute_hash_target(message_bytes, k, T)
+              t = (u * y_k) % q
+              x, rem = solve_superincreasing_knapsack(W, t)
+              public_sum_v = sum(b_i * x_i for b_i, x_i in zip(B, x))
+              accepted = (rem == 0) and (public_sum_v == y_k)
+              trace_rows.append({
+                  "k": k, "sha256_hex": digest_hex, "y_k": y_k, "t": t,
+                  "x": x, "remainder": rem, "public_sum_v": public_sum_v,
+                  "accepted": accepted,
+              })
+              if accepted:
+                  return {"status": "VALID", "k": k, "x": x, "y_k": y_k, "t": t,
+                          "public_sum_v": public_sum_v, "trace": trace_rows}
+          return {"status": "NOT_FOUND", "trace": trace_rows}
+      ```
+      Giải thích: Hàm `build_canonical_frame()` đóng gói thông điệp $M$ (đã mã hóa UTF-8) cùng nhãn phân tách miền `b"MHK-DEMO-v1\x00"`, độ dài byte 8-byte Big-Endian và bộ đếm $k$ 8-byte Big-Endian để ngăn chặn hiện tượng nhập nhằng biên khi ghép chuỗi. Tại mỗi lượt thử $k \in [0, 4095]$, hàm `sign_message()` tính $y_k = H_k(M) \bmod (T+1)$, chuyển về bài toán dễ $t = (u \cdot y_k) \bmod q$, gọi `solve_superincreasing_knapsack(W, t)` duyệt ngược từ $w_n$ về $w_1$, và thực hiện bước tự kiểm chứng (self-verification): chỉ chấp nhận chữ ký $\sigma = (k, x)$ khi phần dư $t_{\text{rem}} = 0$ đồng thời tổng công khai $v = \sum_{i=1}^n b_i x_i = y_k$. Mọi lượt thử bị loại hay chấp nhận đều được ghi vào `trace_rows` để hiển thị lên bảng Trace Table.
+
+      (3) Đoạn mã Thuật toán Kiểm tra Xác thực chữ ký độc lập (Yêu cầu d):
+      ```python
+      def verify_signature(message_str: str, B: List[int], T: int, k: int,
+                           signature_x: List[int], max_counter: int = DEFAULT_MAX_COUNTER) -> dict:
+          """Xác thực chữ ký hoàn toàn độc lập với khóa bí mật (chỉ dùng M, pk=(B,T) và sigma=(k,x))."""
+          if not isinstance(k, int) or k < 0 or k >= max_counter:
+              return {"status": "FORMAT_ERROR", "reason": f"Bộ đếm k={k} nằm ngoài [0, {max_counter - 1}]."}
+          if len(signature_x) != len(B):
+              return {"status": "FORMAT_ERROR", "reason": f"Độ dài vector x ({len(signature_x)}) khác n ({len(B)})."}
+          if any(bit not in (0, 1) for bit in signature_x):
+              return {"status": "FORMAT_ERROR", "reason": "Vector chữ ký x chứa phần tử không thuộc {0, 1}."}
+          if sum(B) != T or T <= 0:
+              return {"status": "FORMAT_ERROR", "reason": "Tổng công khai T không khớp với sum(B)."}
+
+          message_bytes = message_str.encode("utf-8")
+          digest_hex, y_k = compute_hash_target(message_bytes, k, T)
+          public_sum_v = sum(b_i * x_i for b_i, x_i in zip(B, signature_x))
+          is_valid = (public_sum_v == y_k)
+          return {
+              "status": "VALID" if is_valid else "INVALID",
+              "y_k": y_k, "public_sum_v": public_sum_v, "sha256_hex": digest_hex,
+          }
+      ```
+      Giải thích: Hàm `verify_signature()` minh chứng rõ ràng tính chất bất đối xứng của chữ ký số công khai: danh sách tham số đầu vào chỉ nhận `message_str`, khóa công khai `B`, `T` và chữ ký `(k, signature_x)`, hoàn toàn không truy cập tới `W`, `q`, `r` hay `u`. Hàm kiểm tra chặt chẽ định dạng nhị phân $x_i \in \{0, 1\}$, tính lại $y_k = H_k(M) \bmod (T+1)$ và tổng trọng số công khai $v = \sum_{i=1}^n b_i x_i$. Nếu $v = y_k$ thì trả về `VALID`, ngược lại trả về `INVALID`.
+
+* 3.3. Hướng dẫn cài đặt phần mềm
+   * 3.3.1. Hướng dẫn cài đặt phần mềm nền
+      Để cài đặt môi trường chạy chương trình trên máy tính cá nhân (Windows 10/11, macOS hoặc Ubuntu Linux), thực hiện tuần tự các bước sau:
+      - Bước 1: Tải và cài đặt trình thông dịch Python phiên bản 3.11 trở lên từ trang chủ chính thức https://www.python.org/downloads/. Trên hệ điều hành Windows, tại màn hình cài đặt đầu tiên, bắt buộc tích chọn ô "Add python.exe to PATH" trước khi bấm "Install Now".
+      - Bước 2: Mở cửa sổ dòng lệnh (Command Prompt / PowerShell trên Windows hoặc Terminal trên macOS/Linux) và kiểm tra phiên bản Python cùng trình quản lý gói pip bằng lệnh:
+        ```bash
+        python --version
+        pip --version
+        ```
+      - Bước 3: Cài đặt thư viện giao diện đồ họa PySide6 và công cụ kiểm thử tự động pytest thông qua pip:
+        ```bash
+        pip install PySide6>=6.6.0 pytest>=8.0.0
+        ```
+
+   * 3.3.2. Hướng dẫn cài đặt và chạy chương trình của đề tài
+      Sau khi nhận tệp nén bài tập lớn của nhóm (`Nhom_XX_DeTai_MHK.rar`), người dùng thực hiện theo một trong hai cách sau:
+      - Cách 1 – Chạy trực tiếp từ mã nguồn Python:
+        1. Giải nén tệp `Nhom_XX_DeTai_MHK.rar` vào một thư mục trên máy tính, chuyển vào thư mục mã nguồn `mhk_signature_app/`.
+        2. Chạy bộ kiểm thử đơn vị tự động để xác nhận toàn bộ các hàm toán học hoạt động chính xác:
+           ```bash
+           python -m unittest tests/test_mhk_engine.py -v
+           ```
+        3. Khởi động giao diện đồ họa của chương trình bằng lệnh:
+           ```bash
+           python main.py
+           ```
+      - Cách 2 – Mở tệp thực thi đóng gói sẵn (.exe trên Windows):
+        Mở thư mục `dist/` bên trong gói giải nén và nhấp đúp chuột vào tệp `MHK_Digital_Signature.exe` để chạy trực tiếp chương trình mà không cần cài đặt Python (tệp `.exe` được đóng gói bằng lệnh `pyinstaller --onefile --windowed --name MHK_Digital_Signature main.py`).
+
+* 3.4. Hướng dẫn chi tiết sử dụng các chức năng của phần mềm
+   * 3.4.1. Chức năng nhập tham số và tạo khóa (Yêu cầu a, b)
+      - Bước 1: Mở chương trình, tại thanh điều hướng chính chọn "1. Tham số & Sinh khóa (Yêu cầu a, b)".
+      - Bước 2: Nhập các tham số đầu vào vào các ô tương ứng:
+        + Ô "Số phần tử n": nhập `5`.
+        + Ô "Dãy siêu tăng W = (w_1, ..., w_n)": nhập `2, 3, 7, 14, 30`.
+        + Ô "Mô-đun q": nhập `61`.
+        + Ô "Số nhân r": nhập `17`.
+        (Người dùng cũng có thể chọn cấu hình mẫu chuẩn từ hộp chọn Preset và bấm "Nạp Preset").
+      - Bước 3: Bấm nút "Kiểm tra Tham số & Tạo khóa".
+      - Bước 4: Quan sát kết quả trên màn hình:
+        + Bảng kiểm tra 4 điều kiện toán học báo `PASS` cho cả 4 tiêu chí: $w_i > 0$, dãy siêu tăng ($\sum W = 56$), $q = 61 > 56$, và $\gcd(17, 61) = 1$.
+        + Khung Khóa công khai hiển thị rõ: $B = (34, 51, 58, 55, 22)$ và tổng $T = 220$ (miền băm $T+1 = 221$).
+        + Khung Khóa bí mật hiển thị rõ: $W = (2, 3, 7, 14, 30)$, $q = 61$, $r = 17$, và nghịch đảo nhân $u = r^{-1} \bmod q = 18$.
+        + Bảng chi tiết bên dưới liệt kê từng bước tính $b_1 = 34, b_2 = 51, b_3 = 58, b_4 = 55, b_5 = 22$.
+
+      [Chèn Hình 3.2: Giao diện màn hình Nhập tham số đầu vào và Sinh tập khóa công khai, khóa bí mật (Tệp ảnh chụp thực tế: /assets/report_figures/hinh_3_2_keygen.png)]
+
+   * 3.4.2. Chức năng ký văn bản M (Yêu cầu c)
+      - Bước 1: Chuyển sang màn hình "2. Ký số văn bản M (Yêu cầu c)".
+      - Bước 2: Tại ô "Văn bản cần ký M (UTF-8)", nhập chuỗi `"Tôi đồng ý"`. Hệ thống tự động thống kê độ dài `15 bytes` UTF-8 và hiển thị cấu trúc đóng gói Frame `b"MHK-DEMO-v1\x00" + len(15)_8B_BE + M_bytes + k_8B_BE`.
+      - Bước 3: Bấm nút "Thực hiện Ký số Văn bản M".
+      - Bước 4: Quan sát kết quả cuối cùng và các bước tính toán trung gian trên màn hình:
+        + Khung kết quả chữ ký hiển thị trạng thái `VALID`, bộ đếm tìm được $k = 2$, vector chữ ký nhị phân $x = (1, 0, 0, 0, 1)$, giá trị băm SHA-256 hex `e40b8fe9197f26188ac39dee57029c93a2c472be45bbbde89febb4731732bffc`, giá trị đại diện $y_2 = 56$, mục tiêu quy đổi $t = 32$ và tổng kiểm chứng công khai $v = 56$.
+        + Bảng giải tham lam ngược từ $i = 5$ về $i = 1$ hiển thị rõ: tại $w_5 = 30 \le 32 \Rightarrow x_5 = 1$ (còn dư $2$); tại $w_4 = 14, w_3 = 7, w_2 = 3$ đều lớn hơn $2$ nên $x_4 = x_3 = x_2 = 0$; tại $w_1 = 2 \le 2 \Rightarrow x_1 = 1$ (còn dư $0$).
+        + Bảng quá trình tính toán (Trace Table 6 cột) hiển thị đầy đủ 3 lượt thử:
+          * Lượt $k = 0$: $y_0 = 104, t = 42, x = (1,1,1,0,1)$, dư $0$, nhưng tổng công khai $v = 165 \neq 104 \Rightarrow$ `LOẠI (REJECTED)`.
+          * Lượt $k = 1$: $y_1 = 163, t = 6, x = (1,1,0,0,0)$, còn dư $1 \neq 0 \Rightarrow$ `LOẠI (REJECTED)`.
+          * Lượt $k = 2$: $y_2 = 56, t = 32, x = (1,0,0,0,1)$, dư $0$, tổng công khai $v = 34 + 22 = 56 = y_2 \Rightarrow$ `CHẤP NHẬN (ACCEPTED)`.
+
+      [Chèn Hình 3.3: Giao diện màn hình Ký số văn bản M và Bảng truy vết quá trình tính toán Trace Table (Tệp ảnh chụp thực tế: /assets/report_figures/hinh_3_3_sign.png)]
+
+   * 3.4.3. Chức năng kiểm tra xác thực chữ ký (Yêu cầu d)
+      - Bước 1: Chuyển sang màn hình "3. Xác thực chữ ký (Yêu cầu d)". Hệ thống tự động chuyển văn bản $M = \text{"Tôi đồng ý"}$, khóa công khai $B = (34, 51, 58, 55, 22), T = 220$ và chữ ký $\sigma = (k = 2, x = (1, 0, 0, 0, 1))$ sang màn hình xác thực (hoàn toàn không sử dụng khóa bí mật $sk$).
+      - Bước 2: Bấm nút "Thực hiện Kiểm tra Xác thực".
+      - Bước 3: Quan sát bảng đối chiếu từng phần tử $b_i \cdot x_i$ ($34 \times 1 + 51 \times 0 + 58 \times 0 + 55 \times 0 + 22 \times 1 = 56$) khớp hoàn toàn với $y_2 = 56$, màn hình hiển thị kết luận `VALID (CHỮ KÝ HỢP LỆ)`.
+      - Bước 4: Thử nghiệm phát hiện giả mạo trực tiếp trên màn hình:
+        + Bấm nút thử nhanh "Thử sửa nội dung văn bản M" (văn bản đổi thành `"Tôi không đồng ý"`) rồi bấm xác thực: hệ thống tính lại $y_2 = 65 \neq v = 56$ và lập tức cảnh báo `INVALID (CHỮ KÝ KHÔNG HỢP LỆ)`.
+        + Bấm nút thử nhanh "Thử sửa 1 bit chữ ký x" (vector đổi thành `0, 0, 0, 0, 1`): hệ thống tính lại $v = 22 \neq y_2 = 56$ và báo `INVALID`.
+
+      [Chèn Hình 3.4: Giao diện màn hình Kiểm tra xác thực chữ ký độc lập trên văn bản M (Tệp ảnh chụp thực tế: /assets/report_figures/hinh_3_4_verify.png)]
+
+   * 3.4.4. Chức năng nạp ví dụ mẫu và xuất/nhập tệp JSON
+      - Nạp ví dụ mẫu (Preset Loader): Tại thanh công cụ phía trên hoặc trong Màn hình 4, người dùng có thể chọn nhanh 7 cấu hình mẫu được cài đặt sẵn (gồm Bộ tham số chuẩn TC-01, các cấu hình lỗi TC-02a/b/c, kịch bản giả mạo văn bản TC-03, giả mạo chữ ký TC-04 và phản ví dụ giả mạo chữ ký không cần khóa bí mật TC-05).
+      - Xuất/Nhập tệp JSON: Tại Màn hình 2 và Màn hình 3, bấm nút "Xuất Gói Chữ ký (.json)" để lưu tệp JSON chứa hồ sơ `profile: "mhk-demo-preimage-v1"`, thông điệp $M$, khóa công khai $pk = (B, T)$ và chữ ký $\sigma = (k, x)$. Người kiểm tra có thể dùng nút "Nhập Tệp JSON" để nạp dữ liệu kiểm tra độc lập mà không bao giờ tiếp xúc với khóa bí mật $sk$.
+
+* 3.5. Kịch bản chạy thử nghiệm (Test Cases) và Kết quả
+   Để kiểm chứng toàn diện tính đúng đắn của phần mềm, nhóm đã thiết kế và thực thi tự động 4 kịch bản kiểm thử chuẩn (TC-01 đến TC-04) cùng 1 kịch bản kiểm thử giới hạn an toàn (TC-05). Kết quả đối chiếu giữa tính toán lý thuyết và thực nghiệm chạy chương trình đạt tỷ lệ chính xác tuyệt đối 100%:
+
+   Bảng 3.5. Tổng hợp kịch bản kiểm thử (Test Cases) và kết quả chạy thực nghiệm trên phần mềm:
+   +--------+-----------------------------+---------------------------------------------+---------------------------------------------+---------------------------------------------+----------+
+   | Mã TC  | Tên kịch bản kiểm thử       | Dữ liệu đầu vào (Input)                     | Kết quả kỳ vọng (Expected Output)           | Kết quả thực tế trên phần mềm (Actual)      | Đánh giá |
+   +--------+-----------------------------+---------------------------------------------+---------------------------------------------+---------------------------------------------+----------+
+   | TC-01  | Luồng chuẩn: Tạo khóa,      | n=5, W=(2,3,7,14,30), q=61, r=17;           | - Tạo khóa: VALID, B=(34,51,58,55,22),      | Hiển thị đúng B=(34,51,58,55,22), T=220,    | PASS     |
+   |        | Ký văn bản "Tôi đồng ý"     | M="Tôi đồng ý" (15 bytes UTF-8).            |   T=220, u=18.                              | u=18; Trace Table loại k=0, k=1 và nhận     |          |
+   |        | và Xác thực chữ ký          |                                             | - Ký: loại k=0 (v=165!=104), loại k=1       | k=2, x=(1,0,0,0,1); Xác thực báo VALID      |          |
+   |        |                             |                                             |   (dư 1), nhận k=2, x=(1,0,0,0,1), y_2=56.  | (v = 56 = y_2).                             |          |
+   |        |                             |                                             | - Xác thực: VALID (v = y_2 = 56).           |                                             |          |
+   +--------+-----------------------------+---------------------------------------------+---------------------------------------------+---------------------------------------------+----------+
+   | TC-02  | Kiểm tra bắt lỗi tham số    | - TC-02a: W=(2,3,5,14,30) (w_3=5 <= 2+3).   | Hệ thống từ chối tạo khóa, trả về mã trạng  | Cả 3 trường hợp đều trả về FORMAT_ERROR kèm | PASS     |
+   |        | đầu vào sai điều kiện       | - TC-02b: W=(2,3,7,14,30), q=50 <= sum(W).  | thái FORMAT_ERROR và chỉ rõ điều kiện toán  | thông báo vị trí lỗi chính xác trên bảng    |          |
+   |        | toán học                    | - TC-02c: q=60, r=15 (gcd(15,60)=15 != 1).  | học bị vi phạm.                             | kiểm tra điều kiện tham số.                 |          |
+   +--------+-----------------------------+---------------------------------------------+---------------------------------------------+---------------------------------------------+----------+
+   | TC-03  | Phát hiện giả mạo nội dung  | Giữ nguyên pk=(B,T) và chữ ký               | Giá trị băm tính lại y_2 = 65 khác với tổng | Màn hình Xác thực hiển thị y_2 = 65 !=      | PASS     |
+   |        | văn bản M sau khi ký        | sigma=(k=2, x=(1,0,0,0,1)); sửa văn bản     | công khai v = 56; kết luận chữ ký           | v = 56 và báo trạng thái INVALID.           |          |
+   |        |                             | thành M'="Tôi không đồng ý" (21 bytes).     | INVALID.                                    |                                             |          |
+   +--------+-----------------------------+---------------------------------------------+---------------------------------------------+---------------------------------------------+----------+
+   | TC-04  | Phát hiện sửa đổi vector    | - TC-04a: M="Tôi đồng ý", k=2, sửa bit đầu  | - TC-04a: v = 22 != y_2 = 56 -> INVALID.    | - TC-04a hiển thị v = 22 != 56 -> INVALID.  | PASS     |
+   |        | chữ ký x hoặc sai định dạng |   thành x'=(0,0,0,0,1).                     | - TC-04b: phần tử x_1=2 không thuộc {0,1}   | - TC-04b chặn ngay ở bước kiểm tra quy cách |          |
+   |        |                             | - TC-04b: nhập x''=(2,0,0,0,1).             |   -> FORMAT_ERROR.                          |   và báo FORMAT_ERROR.                      |          |
+   +--------+-----------------------------+---------------------------------------------+---------------------------------------------+---------------------------------------------+----------+
+
+   [Chèn Hình 3.5: Giao diện màn hình chạy tự động 4 Kịch bản kiểm thử (Test Cases) và đối chiếu kết quả thực nghiệm (Tệp ảnh chụp thực tế: /assets/report_figures/hinh_3_5_testcases.png)]
+
+
+CHƯƠNG 4: ĐÁNH GIÁ KẾT QUẢ NGHIÊN CỨU VÀ KẾT LUẬN (Khoảng 2–3 trang)
+
+* 4.1. Đánh giá kết quả đạt được
+   Đối chiếu với mục tiêu đề ra ban đầu và các yêu cầu tối thiểu của đề tài "Xây dựng chương trình phần mềm thực hiện hệ chữ ký điện tử MHK", nghiên cứu và chương trình phần mềm của nhóm đã hoàn thành trọn vẹn các nội dung sau:
+   - Về mặt nghiên cứu lý thuyết: Đã hệ thống hóa đầy đủ cơ sở toán học của bài toán xếp ba lô 0–1 (Subset-Sum / Knapsack), tính chất của dãy siêu tăng và thuật toán giải tham lam độ phức tạp tuyến tính $O(n)$, cơ chế cửa sập (trapdoor) thông qua phép nhân mô-đun $b_i = (r \cdot w_i) \bmod q$ cùng nghịch đảo Euclid mở rộng $u = r^{-1} \bmod q$. Đặc biệt, báo cáo đã làm rõ lý do vì sao khi áp dụng MHK cho bài toán chữ ký số (preimage signature) cần phải có vòng lặp bộ đếm $k$ và bước tự kiểm chứng công khai $\sum_{i=1}^n b_i x_i = y_k$ trên tập số nguyên $\mathbb{Z}$.
+   - Về mặt xây dựng chương trình phần mềm: Đã thiết kế và cài đặt thành công ứng dụng bằng ngôn ngữ Python theo kiến trúc 4 tầng sạch (Presentation, Application, Domain, Infrastructure), thực hiện đầy đủ cả 4 chức năng bắt buộc (a, b, c, d) ngay trên màn hình giao diện đồ họa:
+     + (a) Cho phép nhập linh hoạt các tham số $(n, W, q, r)$ và kiểm tra tự động 4 tiên đề toán học.
+     + (b) Tính toán chính xác và hiển thị tách biệt tập khóa công khai $pk = (B, T)$ cùng khóa bí mật $sk = (W, q, r, u)$.
+     + (c) Thực hiện ký số lên văn bản tiếng Việt UTF-8 $M$ với bảng truy vết quá trình tính toán (Trace Table 6 cột) hiển thị tường minh từng lượt thử bộ đếm $k = 0, 1, 2, \dots$ và từng bước giải tham lam ngược từ $w_n$ về $w_1$.
+     + (d) Thực hiện xác thực chữ ký hoàn toàn độc lập với khóa bí mật (chỉ sử dụng $M$, $pk$ và $\sigma$), phát hiện chính xác mọi hành vi sửa đổi nội dung văn bản hoặc sửa đổi vector chữ ký.
+
+* 4.2. Hạn chế của hệ thống và Bài học rút ra
+   Bên cạnh tính đúng đắn về mặt thuật toán và phần mềm minh họa, nghiên cứu cũng chỉ ra rõ sự khác biệt cốt lõi giữa một mô hình minh họa học thuật (educational correctness) và một hệ mật mã an toàn trong thực tế (production cryptographic security):
+   1. Rủi ro giả mạo chữ ký khi miền băm rút gọn nhỏ:
+      Trong cấu hình minh họa với $n = 5$, tổng khóa công khai là $T = 220$, dẫn tới miền giá trị của đại diện băm $y_k = H_k(M) \bmod (T+1)$ chỉ gồm $T + 1 = 221$ giá trị nguyên thuộc đoạn $[0, 220]$. Kẻ tấn công không hề biết khóa bí mật $sk = (W, q, r, u)$ có thể thực hiện tấn công tiền ảnh (preimage brute-force) cực kỳ đơn giản như sau:
+      - Chọn trước một vector nhị phân bất kỳ, ví dụ $x_{\text{forge}} = (1, 0, 1, 0, 1)$ và dùng khóa công khai $B = (34, 51, 58, 55, 22)$ tính sẵn tổng mục tiêu:
+        $$v_{\text{forge}} = 34 \times 1 + 51 \times 0 + 58 \times 1 + 55 \times 0 + 22 \times 1 = 114$$
+      - Với thông điệp giả mạo $M_{\text{forge}} = \text{"Thông điệp giả mạo MHK"}$, kẻ tấn công chỉ cần tăng dần bộ đếm $k = 0, 1, 2, \dots$ cho đến khi tìm được $y_k = H_k(M_{\text{forge}}) \bmod 221 = 114$. Thực nghiệm trên chính phần mềm cho thấy chỉ đến lượt thử **$k = 123$**, kẻ tấn công đã thu được $y_{123} = 114 = v_{\text{forge}}$, tạo ra cặp chữ ký giả mạo hợp lệ $\sigma_{\text{forge}} = (k = 123, x = (1, 0, 1, 0, 1))$ vượt qua hoàn toàn hàm xác thực (`VALID`) mà không cần khóa bí mật.
+
+      [Chèn Hình 4.1: Minh họa thực nghiệm phản ví dụ giả mạo chữ ký không cần khóa bí mật tại bộ đếm k = 123 khi miền băm nhỏ T + 1 = 221 (Tệp ảnh chụp thực tế: /assets/report_figures/hinh_4_1_forgery.png)]
+
+   2. Điểm yếu cấu trúc của cửa sập nhân mô-đun trước tấn công rút gọn dàn (Lattice Reduction):
+      Ngay cả khi tăng kích thước khóa lên $n \ge 256$ bit, công trình kinh điển của Adi Shamir (1982, 1984) và các tấn công rút gọn cơ sở dàn (LLL của Lenstra–Lenstra–Lovász năm 1982; Lagarias–Odlyzko năm 1985) đã chứng minh rằng tỷ lệ mật độ (density) thấp của dãy siêu tăng bị che giấu bởi một phép nhân mô-đun đơn lẻ có thể bị phá vỡ trong thời gian đa thức.
+   3. Bài học rút ra:
+      - Một chương trình chạy đúng công thức toán học không đồng nghĩa với việc hệ mật đó an toàn trước các tấn công phân tích mật mã hiện đại.
+      - Khi thiết kế phần mềm mật mã, phải tách biệt tuyệt đối vùng nhớ và luồng dữ liệu của khóa bí mật ($sk$) khỏi luồng xác thực công khai ($pk$), đồng thời kiểm tra nghiêm ngặt mọi định dạng đầu vào (`FORMAT_ERROR`) trước khi thực hiện phép toán.
+
+* 4.3. Hướng phát triển của đề tài
+   Từ nền tảng chương trình phần mềm đã xây dựng, đề tài có thể được mở rộng theo các hướng nghiên cứu và ứng dụng tiếp theo:
+   - Thứ nhất, bổ sung mô-đun mô phỏng trực quan thuật toán rút gọn cơ sở dàn LLL (Lenstra–Lenstra–Lovász) ngay trên giao diện để sinh viên quan sát cách kẻ tấn công khôi phục khóa bí mật từ khóa công khai $B$ khi mật độ ba lô thấp.
+   - Thứ hai, tích hợp thêm các chuẩn chữ ký số đang được sử dụng rộng rãi trong thực tế theo tiêu chuẩn NIST FIPS 186-5 như RSA-PSS, ECDSA (trên đường cong elliptic secp256r1/Ed25519) và chữ ký hậu lượng tử dựa trên dàn tinh thể CRYSTALS-Dilithium (ML-DSA / FIPS 204) để so sánh trực tiếp hiệu năng, kích thước khóa và độ an toàn với hệ MHK.
+   - Thứ ba, nâng cấp khả năng ký và kiểm tra chữ ký trên các tệp tài liệu thực tế (PDF, DOCX, XML) kết hợp hiển thị chứng thư số X.509.
+
+
+TÀI LIỆU THAM KHẢO & PHỤ LỤC
+
+* Tài liệu tham khảo:
+   [1] R. C. Merkle and M. E. Hellman, "Hiding information and signatures in trapdoor knapsacks," IEEE Transactions on Information Theory, vol. 24, no. 5, pp. 525–530, Sep. 1978.
+   [2] A. Shamir, "A polynomial-time algorithm for breaking the basic Merkle-Hellman cryptosystem," IEEE Transactions on Information Theory, vol. 30, no. 5, pp. 699–704, Sep. 1984.
+   [3] J. C. Lagarias and A. M. Odlyzko, "Solving low-density subset sum problems," Journal of the ACM (JACM), vol. 32, no. 1, pp. 229–246, Jan. 1985.
+   [4] A. M. Odlyzko, "The rise and fall of knapsack cryptosystems," in Cryptology and Computational Number Theory, Proceedings of Symposia in Applied Mathematics, vol. 42, American Mathematical Society, 1990, pp. 75–88.
+   [5] A. J. Menezes, P. C. van Oorschot, and S. A. Vanstone, Handbook of Applied Cryptography. Boca Raton, FL: CRC Press, 1996, ch. 8 & ch. 11.
+   [6] National Institute of Standards and Technology (NIST), "Secure Hash Standard (SHS)," Federal Information Processing Standards Publication (FIPS) 180-4, Aug. 2015.
+   [7] National Institute of Standards and Technology (NIST), "Digital Signature Standard (DSS)," Federal Information Processing Standards Publication (FIPS) 186-5, Feb. 2023.
+   [8] Bộ môn Công nghệ thông tin – Trường Công nghệ – Đại học Kinh tế Quốc dân, Bài giảng An toàn và Bảo mật Thông tin, Hà Nội, 2026.
+
+* Phụ lục: Cấu trúc tệp JSON chuẩn trao đổi dữ liệu của phần mềm (mhk-demo-preimage-v1)
+   Mẫu tệp gói chữ ký công khai xuất từ chương trình (lưu ý không chứa khóa bí mật W, q, r, u):
+   ```json
+   {
+     "profile": "mhk-demo-preimage-v1",
+     "message": {
+       "text_utf8": "Tôi đồng ý",
+       "byte_length": 15,
+       "encoding": "utf-8"
+     },
+     "public_key": {
+       "n": 5,
+       "B": [34, 51, 58, 55, 22],
+       "T": 220
+     },
+     "signature": {
+       "k": 2,
+       "x": [1, 0, 0, 0, 1]
+     },
+     "verification_snapshot": {
+       "sha256_hex": "e40b8fe9197f26188ac39dee57029c93a2c472be45bbbde89febb4731732bffc",
+       "y_k": 56,
+       "public_sum_v": 56,
+       "status": "VALID"
+     }
+   }
+   ```
+
+PHẦN ĐẦU BÁO CÁO+word (Khuyên)
+Chương 1+2.1 Lan
+2.2+2.3: Chi
+2.4+2.5

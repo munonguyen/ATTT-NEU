@@ -1,0 +1,314 @@
+﻿TÀI LIỆU NHẬP MÔN  •  ĐỌC TRƯỚC BẢN ĐẶC TẢ
+Hướng dẫn đọc hiểu hệ thống chữ ký MHK
+Từ mục đích sử dụng đến luồng tính toán và kiến trúc Python
+Dành cho người mới tiếp cận đề tài và thành viên nhóm trước khi đọc bản đặc tả chi tiết. Phiên bản 1.0 — 05/10/2026.
+Hệ thống được thiết kế để người học nhập tham số, tạo khóa, ký một văn bản và kiểm tra chữ ký ngay trên giao diện. Ngoài kết quả cuối, chương trình trình bày các phép tính để giải thích vì sao kết quả được chấp nhận hoặc bị từ chối.
+Sau khi đọc, bạn cần trả lời được: dữ liệu nào đưa vào; khóa nào dùng để ký; người kiểm tra cần gì; phần mềm tính những bước nào; và vì sao một kết quả hợp lệ của demo chưa chứng minh hệ thống an toàn.
+Đọc tài liệu theo thứ tự nào
+Trang
+	Nội dung
+	Mục đích
+	1–2
+	Mục đích và khái niệm
+	Hiểu đúng khóa, văn bản và chữ ký
+	3–6
+	Knapsack và ví dụ xuyên suốt
+	Theo dõi tạo khóa, ký và xác minh
+	7–8
+	Giao diện và thành phần bên trong
+	Hiểu người dùng thao tác và chương trình xử lý
+	9–10
+	Giới hạn, câu hỏi và đường dẫn đọc tiếp
+	Đọc đúng kết quả và chuyển sang đặc tả
+	
+
+Trạng thái của hệ thống được mô tả
+Đây là hướng dẫn đọc một thiết kế, chưa phải hướng dẫn của ứng dụng GUI đã hoàn thành. Các tên màn hình ở trang 7 là đề xuất trong đặc tả v2. Những phép tính mẫu được kiểm chứng bằng Python độc lập.
+Tên MHK trong đề bài chưa kèm công thức cụ thể. Tài liệu dùng hồ sơ minh họa mhk-demo-preimage-v1 của bản đặc tả để giải thích cách hoạt động. Cần đối chiếu hồ sơ này với giáo trình của lớp trước khi kết luận đã cài đúng lược đồ được giao. Demo dùng số nhỏ để học, có phản ví dụ giả mạo và không dùng cho hợp đồng thật.
+2 Hiểu đúng văn bản khóa và chữ ký
+Một tình huống dễ hình dung
+An muốn gửi cho Bình văn bản “Tôi đồng ý”. An tạo chữ ký bằng văn bản ấy và khóa bí mật của mình. An gửi văn bản, chữ ký và thông tin khóa công khai. Bình dùng bộ xác minh để kiểm tra quan hệ giữa ba dữ liệu này. Trong một lược đồ an toàn, kết quả còn phụ thuộc việc Bình có tin đúng khóa đó thuộc An hay không.
+Dữ liệu
+	Dùng để làm gì
+	Ai cần
+	Văn bản M
+	Nội dung được ký; ví dụ “Tôi đồng ý”
+	Người ký và người kiểm tra
+	Khóa bí mật sk
+	Thông tin để tạo chữ ký theo thuật toán
+	Người ký
+	Khóa công khai pk
+	Thông tin để kiểm tra chữ ký
+	Người kiểm tra; có thể chia sẻ
+	Chữ ký σ
+	Dữ liệu toán học gắn với M và khóa theo lược đồ
+	Gửi kèm M để kiểm tra
+	
+
+Một cặp khóa thường được dùng để ký nhiều văn bản; không bắt buộc tạo hai khóa mới cho mỗi chữ ký. Chữ ký được tính lại khi ký nội dung mới. Với demo có miền đại diện nhỏ, các nội dung khác nhau vẫn có thể cho cùng chữ ký, nên không khẳng định chữ ký luôn duy nhất cho từng văn bản.
+Những nhầm lẫn cần sửa
+Chữ ký mật mã thường là một dãy bytes, số hoặc vector bit. Nó không phải ảnh nét ký tay, và hệ thống không đo hai hình chữ ký giống nhau bao nhiêu phần trăm. Một hình ảnh “đã ký” trên màn hình cũng không thay cho phép xác minh.
+Khóa công khai dùng để xác minh; nó không cấp quyền “chỉ xem chữ ký”. Khóa bí mật dùng để ký; nó không cấp quyền “chỉnh sửa chữ ký”. Muốn đổi văn bản, người ký thực hiện ký lại. Quyền chỉnh sửa giao diện hay tệp là vấn đề của phần mềm và hệ điều hành.
+Ký không làm văn bản bị che giấu. Nếu cần người khác không đọc được nội dung thì phải có chức năng mã hóa riêng. Đăng nhập ứng dụng, xác minh chữ ký và xác nhận danh tính chủ khóa cũng là các việc khác nhau.
+Một câu cần nhớ
+Ký nhận M và khóa bí mật để tạo σ. Xác minh nhận M, σ và khóa công khai để kiểm tra. Người kiểm tra không cần khóa bí mật.
+3 Knapsack là bài toán chọn các số
+Knapsack trong ví dụ này là bài toán tìm một nhóm số có tổng bằng giá trị yêu cầu. Cho các số 2, 3, 7, 14, 30. Để được tổng 39, chọn 2, 7 và 30. Ta biểu diễn lựa chọn bằng x=(1,0,1,0,1): 1 nghĩa là chọn, 0 nghĩa là không chọn. Thứ tự bit phải trùng thứ tự các số.
+Vị trí
+	Số
+	Bit lựa chọn
+	Đóng góp
+	1
+	2
+	1
+	2
+	2
+	3
+	0
+	0
+	3
+	7
+	1
+	7
+	4
+	14
+	0
+	0
+	5
+	30
+	1
+	30
+	Tổng
+	
+
+	
+
+	39
+	
+
+Vì sao dãy này dễ giải
+Mỗi số lớn hơn tổng tất cả số đứng trước nó: 3>2; 7>2+3; 14>2+3+7; 30>2+3+7+14. Dãy có tính chất này gọi là dãy siêu tăng. Người biết dãy có thể giải từ số lớn nhất xuống số nhỏ nhất.
+Với tổng 39, chọn 30 và còn 9; bỏ 14 vì 14 lớn hơn 9; chọn 7 và còn 2; bỏ 3; chọn 2 và còn 0. Cách chọn từ lớn xuống nhỏ gọi là thuật toán tham lam. Chỉ khi phần dư cuối bằng 0 mới tìm được nghiệm cho dãy bí mật.
+Vai trò trong hệ thống
+Dãy dễ giải được giữ trong khóa bí mật. Chương trình biến đổi dãy đó để tạo dãy công khai B. Khi ký theo demo, mục tiêu là tìm các bit x sao cho tổng các phần tử B được chọn bằng đại diện của văn bản. Khi xác minh, người kiểm tra chỉ cộng các phần tử B theo x và so sánh.
+Thông tin bí mật giúp biến đổi mục tiêu công khai thành bài toán dễ giải; đây là ý tưởng trapdoor, tức thông tin hỗ trợ giải theo một hướng. Ý tưởng ấy mô tả cơ chế, không chứng minh khóa công khai khó bị tấn công. Merkle–Hellman cơ bản đã có nghiên cứu phá mã [2].
+Công thức đọc bằng lời
+ΣBᵢxᵢ nghĩa là cộng B ở những vị trí có bit bằng 1. “a mod q” nghĩa là phần dư khi chia a cho q. Ví dụ 119 mod 61=58 vì 119=1×61+58. Bạn chỉ cần hai cách đọc này để theo dõi ví dụ ở các trang tiếp theo.
+4 Bước tạo khóa từ tham số đầu vào
+Giữ xuyên suốt một bộ tham số: n=5, W=(2,3,7,14,30), q=61, r=17. n là số phần tử. W là dãy bí mật. q là mô đun dùng cho phép chia lấy dư. r là số nhân dùng để biến đổi W.
+Kiểm tra trước khi tính
+W phải là dãy siêu tăng gồm số nguyên dương. Tổng W=56, nên q=61 lớn hơn tổng ấy. r nằm giữa 1 và q, đồng thời gcd(17,61)=1, tức hai số không có ước chung lớn hơn 1. Điều kiện này cho phép tìm nghịch đảo của r modulo q. q không bắt buộc là số nguyên tố trong profile demo.
+Tạo dãy công khai
+Mỗi phần tử công khai được tính bằng Bᵢ=(r×Wᵢ) mod q. Người dùng nhập tham số, còn chương trình thực hiện phép nhân và chia lấy dư, rồi hiển thị từng dòng.
+i
+	Wᵢ
+	17 × Wᵢ
+	Lấy dư cho 61
+	Bᵢ
+	1
+	2
+	34
+	34
+	34
+	2
+	3
+	51
+	51
+	51
+	3
+	7
+	119
+	58
+	58
+	4
+	14
+	238
+	55
+	55
+	5
+	30
+	510
+	22
+	22
+	
+
+Tính thông tin hỗ trợ ký
+Nghịch đảo u=18 vì 17×18=306=5×61+1. Do đó 17×18 mod 61=1. Khi ký, chương trình dùng u để đưa một mục tiêu công khai về dãy W. u có thể tính từ r và q, nên thuộc nhóm thông tin bí mật.
+Nhóm
+	Kết quả trong ví dụ
+	Khóa công khai
+	B=(34,51,58,55,22), kèm quy tắc thuật toán và đại diện
+	Khóa bí mật
+	W=(2,3,7,14,30), q=61, r=17; u=18 có thể tính lại
+	Giá trị dẫn xuất
+	T=34+51+58+55+22=220
+	
+
+T không phải khóa bí mật vì ai có B cũng tính được. Những trường như algorithm_id cho biết đang dùng hồ sơ thuật toán nào; key_id giúp nhận diện đúng bộ khóa. key_id không tự chứng minh tên người sở hữu khóa.
+5 Bước ký văn bản Tôi đồng ý
+Biến văn bản thành dữ liệu tính toán
+M là đúng chuỗi “Tôi đồng ý”, không thêm dấu ngoặc kép, dấu xuống dòng hoặc khoảng trắng ở cuối. UTF-8 biểu diễn chuỗi này bằng 15 bytes. Ký làm việc với bytes ấy; cách hiển thị chữ trên màn hình không thay đổi quy tắc tính.
+Chương trình ghép nhãn MHK-DEMO-v1, một byte 0, độ dài bytes, bytes M và bộ đếm k. Độ dài và k được viết bằng số nguyên 8 bytes big endian. Gói bytes vừa ghép gọi là frame. Sau đó tính SHA-256(frame), đọc kết quả như số nguyên và lấy modulo T+1=221 để được mục tiêu yₖ. Counter bắt đầu từ 0; mỗi counter cho một mục tiêu để thử.
+Không cần học thuộc frame ở lần đọc đầu. Chỉ cần hiểu: cùng bytes M và cùng k phải tạo lại cùng y. SHA-256 là phép băm; phép lấy modulo 221 làm mục tiêu nhỏ để demo và cũng làm yếu khả năng chống giả mạo.
+Ba lượt thử thực tế của ví dụ
+k
+	yₖ
+	t = 18yₖ mod 61
+	Kết quả tìm nghiệm
+	0
+	104
+	42
+	Dư bằng 0 nhưng tổng công khai=165≠104; bỏ
+	1
+	163
+	6
+	Giải dãy W còn dư 1; bỏ
+	2
+	56
+	32
+	x=(1,0,0,0,1); dư=0; tổng công khai=56; nhận
+	
+
+Lượt thành công được giải thế nào
+Với k=2, t=18×56 mod 61=32. Chọn W₅=30, còn 2; bỏ 14, 7 và 3; chọn W₁=2, còn 0. Vì vậy x=(1,0,0,0,1). Kiểm tra lại bằng B: 34+22=56=y₂. Chương trình tạo chữ ký có phần toán học là σ=(k=2, x=(1,0,0,0,1)), rồi tự xác minh trước khi trả kết quả.
+Chữ ký lưu còn kèm tên profile, định dạng, chế độ và key_id; không chứa W, q, r hay u. SHA-256 của frame ở lượt k=2 là:
+e40b8fe9197f26188ac39dee57029c93a
+2c472be45bbbde89febb4731732bffc
+Hai dòng trên nối thành một giá trị hex 64 ký tự. Các giá trị của trang này đã được kiểm tra bằng Python độc lập. Đây là ví dụ của demo v1, không phải vector đã xác nhận từ giáo trình của lớp.
+6 Bước xác minh và thử thay đổi dữ liệu
+Người kiểm tra nhận những gì
+Bình chỉ cần M=“Tôi đồng ý”, khóa công khai B và chữ ký có k=2, x=(1,0,0,0,1), cùng quy tắc demo đã biết. Bình không cần W, q, r, u hoặc biết chương trình của An đã giải tham lam thế nào.
+Bộ xác minh trước hết kiểm tra định dạng: x có đúng 5 bit 0/1 không; k có nằm trong giới hạn không; profile và bộ khóa có khớp không. Nếu dữ liệu đọc được, bộ xác minh tính y₂ từ bytes M và k, rồi tính v bằng khóa công khai và vector x.
+Phía tính
+	Đầu vào
+	Kết quả
+	Đại diện văn bản
+	M và k=2 theo quy tắc demo
+	y₂=56
+	Tổng chữ ký
+	B=(34,51,58,55,22), x=(1,0,0,0,1)
+	v=34+22=56
+	So sánh
+	v với y₂
+	56=56 → VALID theo demo
+	
+
+Nếu sửa văn bản
+Giữ chữ ký cũ, đổi M thành “Tôi không đồng ý”. Với k=2, quy tắc demo tạo y₂=65. Vector cũ vẫn cho v=56. Vì 56≠65, kết quả là INVALID. Đây là ca thay đổi đã được tính cụ thể; không suy ra rằng mọi thay đổi văn bản đều bị demo phát hiện.
+Nếu sửa chữ ký
+Giữ M ban đầu nhưng đổi bit đầu của x từ 1 thành 0: x=(0,0,0,0,1). Tổng v chỉ còn 22, trong khi y₂=56, nên bị từ chối. Nếu x chứa 2 hoặc sai độ dài, phải báo lỗi định dạng, chưa được coi là một chữ ký có cấu trúc hợp lệ nhưng sai phép tính.
+Vì sao phải cộng lại trên khóa công khai
+Ở lượt ký thất bại k=0, dãy bí mật có thể giải t=42 bằng x=(1,1,1,0,1), nhưng tổng công khai là 34+51+58+22=165. Mục tiêu thật là 104. Dù 165 và 104 có cùng phần dư modulo 61, chúng không bằng nhau. Chỉ kiểm tra dư bằng 0 sẽ tạo ra kết quả sai.
+VALID của demo nghĩa là quan hệ toán học khớp với profile và khóa đang kiểm tra. Nó chưa chứng minh khóa thuộc An, và với bộ mẫu nhỏ còn chưa chứng minh người tạo chữ ký đã sở hữu bí mật. Trang 9 giải thích giới hạn này.
+7 Đọc giao diện theo công việc của người dùng
+Thiết kế gồm bốn vùng chức năng và một bảng quá trình tính toán. Người dùng thực hiện các công việc trên màn hình; không cần chạy lệnh Python để tạo khóa, ký hoặc xác minh. Mô tả dưới đây là cách vận hành dự kiến, chưa phải ảnh của ứng dụng đã cài đặt.
+Màn hình
+	Bạn đưa vào
+	Bạn cần đọc ở kết quả
+	Tham số và khóa
+	n, W, q, r và profile
+	Điều kiện hợp lệ; B; bí mật; phép tính từng Bᵢ
+	Ký văn bản
+	M và khóa hiện hành
+	Bytes M; counter; chữ ký; lý do bỏ từng mục tiêu
+	Xác minh
+	M, khóa công khai, chữ ký
+	Đại diện y; tổng v; phép so sánh; trạng thái
+	Ví dụ và hướng dẫn
+	Chọn bộ dữ liệu mẫu
+	Bài mẫu thành công, lỗi tham số và giới hạn demo
+	
+
+Thực hành theo ví dụ trong tài liệu
+1. Mở Tham số và khóa, chọn demo v1, nhập n=5, W=2,3,7,14,30, q=61, r=17. Bấm Kiểm tra. Đọc các điều kiện siêu tăng, tổng W và gcd; sửa lỗi nếu có.
+2. Bấm Tạo khóa. Đối chiếu B=(34,51,58,55,22) và u=18. Bảng khóa công khai có thể chia sẻ; bảng bí mật là dữ liệu học thuật để quan sát cơ chế ký.
+3. Mở Ký văn bản, nhập chính xác “Tôi đồng ý”. Kiểm tra độ dài 15 bytes và bấm Ký. Quan sát hai lượt bị bỏ, lượt k=2 được nhận và vector (1,0,0,0,1).
+4. Chuyển M, chữ ký và khóa công khai sang Xác minh. Bấm Xác minh và đọc 56=56. Thử M=“Tôi không đồng ý” trong bản kiểm tra, chạy lại và đọc 56≠65. Không sửa bản M gốc đã dùng để ký.
+Bảng quá trình giúp đọc điều gì
+Mỗi dòng nên thể hiện bước, biểu thức, đầu vào, kết quả và nguyên nhân quyết định. Ví dụ “t=18×56 mod 61=32”; “chọn 30, còn 2”; “34+22=56, khớp y”. Bảng công khai của xác minh không cần chứa dữ liệu bí mật.
+Nếu sửa M, tham số hoặc khóa, kết quả cũ phải được đánh dấu ngay. Nếu việc ký kéo dài, giao diện có tiến độ và nút Hủy. Một tác vụ đã bị hủy hoặc dùng dữ liệu cũ không được trả về như chữ ký hiện hành.
+8 Bên trong chương trình có những thành phần nào
+Ứng dụng được đề xuất dùng Python và PySide6. Giao diện tiếp nhận thao tác; dịch vụ điều phối chuẩn bị dữ liệu; lõi toán học tạo khóa, ký và xác minh; thành phần tệp đọc hoặc lưu JSON. Việc tách trách nhiệm giúp kiểm tra phép tính mà không cần mở cửa sổ.
+  
+
+Sơ đồ kiến trúc dùng lại từ bản đặc tả v2. Mũi tên thể hiện hướng gọi chức năng; không biểu diễn trao đổi mạng.
+Thành phần
+	Cách hiểu
+	Ví dụ trong thao tác Ký
+	Presentation
+	Cửa sổ và phần hiển thị
+	Lấy nội dung ô M; hiển thị chữ ký và trace
+	Application
+	Điều phối công việc
+	Chụp M và khóa; gọi lõi; kiểm tra kết quả còn mới
+	Domain
+	Các quy tắc và phép toán
+	Tạo yₖ; tìm x; kiểm tra tổng; trả chữ ký
+	Infrastructure
+	Đọc và ghi dữ liệu
+	Lưu chữ ký JSON khi người dùng chọn xuất
+	
+
+“Snapshot” là bản chụp dữ liệu tại lúc bấm Ký. “Revision” là số phiên bản của dữ liệu đang làm. Ví dụ tác vụ ký dùng bản 3; bạn sửa M thành bản 4; khi kết quả bản 3 trả về, ứng dụng phải đánh dấu cũ. Tác vụ nền giúp giao diện còn phản hồi trong lúc tính; chỉ luồng giao diện cập nhật các widget.
+Bộ xác minh trong Domain chỉ nhận M, pk và chữ ký. Nó không hỏi kho bí mật và không lấy việc “chữ ký này đã từng xuất hiện trong GUI” làm điều kiện hợp lệ. Với đề tài tối thiểu, không cần máy chủ, cơ sở dữ liệu hoặc tài khoản để thực hiện bốn chức năng.
+9 Đọc đúng trạng thái và giới hạn demo
+Trạng thái
+	Nghĩa cần hiểu
+	Cách xử lý
+	VALID
+	Quan hệ toán học của profile khớp
+	Đọc thêm nhãn demo và độ tin cậy của khóa
+	INVALID
+	Dữ liệu đọc được nhưng không khớp
+	Kiểm tra đúng M, chữ ký và khóa chưa
+	FORMAT_ERROR
+	Dữ liệu không đúng cấu trúc hoặc miền
+	Sửa trường sai rồi chạy lại
+	NOT_FOUND
+	Hết lượt thử mà chưa tìm được nghiệm
+	Không coi là văn bản giả mạo
+	TIME_LIMIT hoặc CANCELLED
+	Hết thời gian hoặc người dùng hủy
+	Chưa có chữ ký hoàn tất để xuất
+	UNSUPPORTED_PROFILE
+	Không hỗ trợ hồ sơ thuật toán này
+	Dùng đúng engine và định dạng
+	
+
+Ba câu hỏi đánh giá khác nhau
+Chương trình có tính đúng không? Có thể kiểm tra bằng ví dụ, oracle và phép so sánh. Giao diện có đáp ứng đề bài không? Phải chạy và quan sát đủ các chức năng trên màn hình. Thuật toán có chống giả mạo không? Cần phân tích mật mã; việc hai phép tính bằng nhau không trả lời câu hỏi này.
+Một phản ví dụ của bộ mẫu
+Với B đang dùng, ai cũng có thể chọn x=(1,0,1,0,1) và cộng được v=114. Script nghiên cứu thử counter cho M=“Thông điệp giả mạo MHK” và tìm được k=123 tạo y₁₂₃=114. Verify chấp nhận mà bước tạo chữ ký này không dùng W, q, r hay u. Cùng chữ ký còn được chấp nhận cho M=“Văn bản thay thế 7”.
+Nguyên nhân trực tiếp ở ví dụ là miền mục tiêu chỉ có 221 giá trị. Băm bằng SHA-256 rồi rút xuống miền nhỏ không giữ mức chống giả mạo như một chữ ký hiện đại. Merkle–Hellman cơ bản cũng đã có nghiên cứu tấn công cấu trúc [2]. Tài liệu vì vậy giới hạn demo ở mục đích học thuật.
+Điều giới hạn này thay đổi trong thiết kế
+GUI phải giải thích “khớp quan hệ toán học của demo”, giữ riêng thông tin tin cậy khóa và cho xem phản ví dụ. Không sửa Verify thành cần khóa bí mật để che điểm yếu. Trước khi chốt phần mềm theo đề bài, phải xác nhận công thức lớp; nếu dùng biến thể khác thì thay engine và ví dụ tương ứng.
+10 Tự kiểm tra hiểu biết và đọc tiếp
+Các câu hỏi thường gặp
+Chữ ký là hình vẽ? Không. Trong ví dụ, đó là counter và vector bit, kèm thông tin định dạng.
+Người kiểm tra cần bí mật? Không. Họ tính y từ M và k, tính v từ B và x rồi so sánh.
+Tại sao cần k? Không phải y nào cũng có nghiệm. k cho phép thử các đại diện khác nhau; demo giới hạn 4096 lượt.
+Có thể bỏ băm? Nhập y trực tiếp chỉ giúp học phép toán. Ký văn bản cần quy tắc chuyển M thành đại diện.
+Vì sao sửa M đôi khi vẫn hợp lệ? Miền đại diện nhỏ có va chạm; xem phản ví dụ ở trang 9.
+Có thể bắt đầu lập trình? Có thể làm GUI và lõi demo. Để xác nhận đúng MHK của lớp, cần công thức và ví dụ từ giáo trình.
+Đường dẫn đọc bản đặc tả v2
+Bạn muốn hiểu sâu
+	Đọc phần trong đặc tả
+	Công thức và quy tắc ký
+	Chương 2; phụ lục A
+	Danh sách yêu cầu và trạng thái
+	Chương 3
+	Module, dữ liệu và tác vụ nền
+	Chương 4 và 11
+	Luồng thao tác GUI
+	Chương 5
+	Cách kiểm chứng và nghiệm thu
+	Chương 6 và 10
+	Nguồn quốc tế và giới hạn mật mã
+	Chương 9; tài liệu tham khảo
+	
+
+Nguồn và phạm vi tham khảo
+[1] Đặc tả phần mềm thực hiện hệ chữ ký điện tử MHK v2.0, 05/10/2026. Nguồn chính của thiết kế, profile và bộ tham số trong hướng dẫn. Ví dụ “Tôi đồng ý” được tính bổ sung theo đúng profile đó.
+[2] A. Shamir, A Polynomial-Time Algorithm for Breaking the Basic Merkle–Hellman Cryptosystem, IEEE Transactions on Information Theory 30(5), 699–704, 1984. DOI 10.1109/TIT.1984.1056964. Phạm vi kết luận là hệ cơ bản.
+[3] R. C. Merkle và M. E. Hellman, Hiding Information and Signatures in Trapdoor Knapsacks, 1978, phần VI. https://ee.stanford.edu/~hellman/publications/30.pdf. Nguồn gốc lịch sử; frame và vector của hướng dẫn là lựa chọn demo, không phải vector nguyên bản của bài báo.
+Hướng dẫn đọc hiểu hệ thống MHK  |

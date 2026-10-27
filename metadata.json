@@ -1,0 +1,6 @@
+{
+  "name": "Hệ thống Chữ ký Điện tử MHK (mhk-demo-preimage-v1)",
+  "description": "Phần mềm minh họa học thuật Hệ chữ ký điện tử dựa trên bài toán xếp ba lô Merkle–Hellman (MHK), kiến trúc 4 tầng kèm Báo cáo An toàn thông tin hoàn chỉnh.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
