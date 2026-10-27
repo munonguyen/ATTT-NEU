@@ -6,8 +6,137 @@ import React from 'react';
  * academic tables, strictly preserving black-and-white academic layout (no colors).
  */
 
+export const REPORT_IMAGE_ASSETS = [
+  {
+    id: 'hinh_1_1',
+    code: 'Hình 1.1',
+    chapter: 'Chương 1 (Mục 1.5.2)',
+    filename: 'hinh_1_1_mo_hinh_luong_du_lieu.png',
+    path: '/img/hinh_1_1_mo_hinh_luong_du_lieu.png',
+    caption:
+      'Hình 1.1: Mô hình luồng dữ liệu từ bước Tạo khóa (pk, sk), Ký văn bản M tạo chữ ký σ đến bước Xác thực công khai.',
+  },
+  {
+    id: 'hinh_3_1',
+    code: 'Hình 3.1',
+    chapter: 'Chương 3 (Mục 3.1.2)',
+    filename: 'hinh_3_1_kien_truc_4_tang.png',
+    path: '/img/hinh_3_1_kien_truc_4_tang.png',
+    caption:
+      'Hình 3.1: Sơ đồ kiến trúc 4 tầng (Presentation – Application – Domain – Infrastructure) của phần mềm chữ ký điện tử MHK.',
+  },
+  {
+    id: 'hinh_3_2',
+    code: 'Hình 3.2',
+    chapter: 'Chương 3 (Mục 3.4.1)',
+    filename: 'hinh_3_2_keygen.png',
+    path: '/img/hinh_3_2_keygen.png',
+    caption:
+      'Hình 3.2: Ảnh chụp màn hình thực tế Màn hình 1 (Tham số và Khóa) sau khi kiểm tra điều kiện và sinh cặp khóa với bộ tham số chuẩn n=5, W=(2,3,7,14,30), q=61, r=17.',
+  },
+  {
+    id: 'hinh_3_3',
+    code: 'Hình 3.3',
+    chapter: 'Chương 3 (Mục 3.4.2)',
+    filename: 'hinh_3_3_sign.png',
+    path: '/img/hinh_3_3_sign.png',
+    caption:
+      'Hình 3.3: Ảnh chụp màn hình thực tế Màn hình 2 (Ký văn bản) hiển thị chi tiết 3 lượt thử bộ đếm k=0, k=1, k=2 khi ký văn bản "Tôi đồng ý".',
+  },
+  {
+    id: 'hinh_3_4',
+    code: 'Hình 3.4',
+    chapter: 'Chương 3 (Mục 3.4.3)',
+    filename: 'hinh_3_4_verify.png',
+    path: '/img/hinh_3_4_verify.png',
+    caption:
+      'Hình 3.4: Ảnh chụp màn hình thực tế Màn hình 3 (Xác minh chữ ký) thực hiện kiểm tra độc lập từ (M, B, k, x) và trả về trạng thái VALID khi v = y₂ = 56.',
+  },
+  {
+    id: 'hinh_3_5',
+    code: 'Hình 3.5',
+    chapter: 'Chương 3 (Mục 3.5)',
+    filename: 'hinh_3_5_testcases.png',
+    path: '/img/hinh_3_5_testcases.png',
+    caption:
+      'Hình 3.5: Ảnh chụp màn hình thực tế Màn hình 4 (Ví dụ & Kịch bản kiểm thử) xác nhận toàn bộ các kịch bản TC-01, TC-02, TC-03, TC-04 và Phản ví dụ đều đạt [PASS / ĐẠT].',
+  },
+  {
+    id: 'hinh_4_1',
+    code: 'Hình 4.1',
+    chapter: 'Chương 4 (Mục 4.2)',
+    filename: 'hinh_4_1_forgery.png',
+    path: '/img/hinh_4_1_forgery.png',
+    caption:
+      'Hình 4.1: Ảnh chụp màn hình thực nghiệm phản ví dụ giả mạo chữ ký tại bộ đếm k = 123 với tổng v = y₁₂₃ = 114 trên màn hình Xác minh mà không cần khóa bí mật.',
+  },
+];
+
+export const ReportImageGallery: React.FC = () => (
+  <section className="my-4 border-2 border-black bg-white p-5 text-black print:hidden">
+    <div className="flex flex-wrap items-center justify-between gap-4 border-b border-black pb-3">
+      <div>
+        <h3 className="text-sm font-bold uppercase">
+          Thư mục Tổng hợp Hình ảnh Báo cáo (/img/ — Đủ 7 Hình Chương 1, 3, 4)
+        </h3>
+        <p className="mt-0.5 text-xs">
+          Toàn bộ hình ảnh đã được tổng hợp vào thư mục <code className="font-mono font-bold">/img/</code> (và <code className="font-mono font-bold">/public/img/</code>). Bấm vào từng ảnh để tải lẻ hoặc tải trọn bộ file nén <code className="font-mono font-bold">.ZIP</code>.
+        </p>
+      </div>
+      <a
+        href="/img/Tat_Ca_Hinh_Anh_Bao_Cao_MHK.zip"
+        download="Tat_Ca_Hinh_Anh_Bao_Cao_MHK.zip"
+        className="border border-black bg-black px-4 py-2 text-xs font-bold text-white hover:bg-neutral-800 whitespace-nowrap shrink-0"
+      >
+        Tải Trọn bộ 7 Ảnh Báo cáo (/img/Tat_Ca_Hinh_Anh_Bao_Cao_MHK.zip)
+      </a>
+    </div>
+
+    <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
+      {REPORT_IMAGE_ASSETS.map((img) => (
+        <div key={img.id} className="border border-black p-3 flex flex-col justify-between space-y-2">
+          <div>
+            <div className="flex items-center justify-between border-b border-black pb-1.5 text-xs">
+              <span className="font-bold">
+                {img.code} — {img.chapter}
+              </span>
+              <code className="font-mono text-[11px]">/img/{img.filename}</code>
+            </div>
+            <div className="mt-2 border border-black bg-white p-1">
+              <img
+                src={img.path}
+                alt={img.caption}
+                referrerPolicy="no-referrer"
+                className="w-full h-44 object-contain bg-white"
+              />
+            </div>
+            <p className="mt-2 text-xs italic">{img.caption}</p>
+          </div>
+          <div className="pt-1 flex items-center justify-end gap-2">
+            <a
+              href={img.path}
+              target="_blank"
+              rel="noreferrer"
+              className="border border-black bg-white px-2.5 py-1 text-xs font-medium text-black hover:bg-neutral-100"
+            >
+              Mở ảnh gốc
+            </a>
+            <a
+              href={img.path}
+              download={img.filename}
+              className="border border-black bg-black px-3 py-1 text-xs font-semibold text-white hover:bg-neutral-800"
+            >
+              Tải {img.filename}
+            </a>
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+);
+
 export const Figure1_1_SystemDataFlow: React.FC = () => (
-  <figure className="my-6 border border-black bg-white p-4 text-black">
+  <figure id="fig-1-1" className="my-6 border border-black bg-white p-4 text-black">
     <div className="mb-3 text-center text-xs font-bold uppercase">
       Sơ đồ luồng dữ liệu tổng thể của Hệ chữ ký điện tử MHK (mhk-demo-preimage-v1)
     </div>
@@ -61,7 +190,7 @@ export const Figure1_1_SystemDataFlow: React.FC = () => (
 );
 
 export const Figure3_1_FourTierArchitecture: React.FC = () => (
-  <figure className="my-6 border border-black bg-white p-4 text-black">
+  <figure id="fig-3-1" className="my-6 border border-black bg-white p-4 text-black">
     <div className="mx-auto max-w-3xl space-y-3 text-xs">
       <div className="border border-black p-3">
         <div className="flex items-center justify-between border-b border-black pb-1 font-bold">
@@ -129,7 +258,7 @@ export const Figure3_2_KeyGenScreenWireframe: React.FC = () => (
   <figure className="my-6 border border-black bg-white p-4 text-black space-y-3">
     <div className="border border-black bg-white p-1">
       <img
-        src="/assets/report_figures/hinh_3_2_keygen.png"
+        src="/img/hinh_3_2_keygen.png"
         alt="Hình 3.2: Giao diện Màn hình 1 (Tham số và Khóa) khi tạo khóa chuẩn"
         referrerPolicy="no-referrer"
         className="w-full h-auto block border border-black"
@@ -151,7 +280,7 @@ export const Figure3_3_SignScreenWireframe: React.FC = () => (
   <figure className="my-6 border border-black bg-white p-4 text-black space-y-3">
     <div className="border border-black bg-white p-1">
       <img
-        src="/assets/report_figures/hinh_3_3_sign.png"
+        src="/img/hinh_3_3_sign.png"
         alt="Hình 3.3: Giao diện Màn hình 2 (Ký văn bản) với 3 lượt thử bộ đếm k"
         referrerPolicy="no-referrer"
         className="w-full h-auto block border border-black"
@@ -173,7 +302,7 @@ export const Figure3_4_VerifyScreenWireframe: React.FC = () => (
   <figure className="my-6 border border-black bg-white p-4 text-black space-y-3">
     <div className="border border-black bg-white p-1">
       <img
-        src="/assets/report_figures/hinh_3_4_verify.png"
+        src="/img/hinh_3_4_verify.png"
         alt="Hình 3.4: Giao diện Màn hình 3 (Xác minh chữ ký) trả về VALID"
         referrerPolicy="no-referrer"
         className="w-full h-auto block border border-black"
@@ -195,7 +324,7 @@ export const Figure3_5_TamperAndErrorScenarios: React.FC = () => (
   <figure className="my-6 border border-black bg-white p-4 text-black space-y-3">
     <div className="border border-black bg-white p-1">
       <img
-        src="/assets/report_figures/hinh_3_5_testcases.png"
+        src="/img/hinh_3_5_testcases.png"
         alt="Hình 3.5: Giao diện Màn hình 4 hiển thị bảng kết quả chạy tự động các Kịch bản kiểm thử TC1-TC5"
         referrerPolicy="no-referrer"
         className="w-full h-auto block border border-black"
@@ -245,7 +374,7 @@ export const Figure4_1_ForgeryCounterexample: React.FC = () => (
   <figure className="my-6 border border-black bg-white p-4 text-black space-y-3">
     <div className="border border-black bg-white p-1">
       <img
-        src="/assets/report_figures/hinh_4_1_forgery.png"
+        src="/img/hinh_4_1_forgery.png"
         alt="Hình 4.1: Minh họa thực nghiệm phản ví dụ giả mạo chữ ký tại k=123 trên màn hình Xác minh"
         referrerPolicy="no-referrer"
         className="w-full h-auto block border border-black"

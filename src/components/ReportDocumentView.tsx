@@ -7,6 +7,7 @@ import {
   Figure3_4_VerifyScreenWireframe,
   Figure3_5_TamperAndErrorScenarios,
   Figure4_1_ForgeryCounterexample,
+  ReportImageGallery,
 } from './ReportFigures';
 import { PYTHON_PROJECT_TREE, PYTHON_SOURCE_FILES } from '../data/pythonSourceCode';
 import { triggerFileDownload } from '../infrastructure/jsonStorage';
@@ -19,7 +20,7 @@ export const ReportDocumentView: React.FC<ReportDocumentViewProps> = ({
   onLoadScenarioInApp,
 }) => {
   const reportContainerRef = useRef<HTMLDivElement>(null);
-  const [activeFilter, setActiveFilter] = useState<'all' | 'ch3_4' | 'ch1_2'>('all');
+  const [activeFilter, setActiveFilter] = useState<'all' | 'ch3_4' | 'ch1_2' | 'img_gallery'>('all');
 
   const handleExportWord = () => {
     if (!reportContainerRef.current) return;
@@ -78,6 +79,15 @@ ${reportContainerRef.current.innerHTML}
           </button>
           <button
             type="button"
+            onClick={() => setActiveFilter('img_gallery')}
+            className={`border border-black px-3 py-1 font-medium transition-colors ${
+              activeFilter === 'img_gallery' ? 'bg-black text-white' : 'bg-white text-black hover:bg-neutral-100'
+            }`}
+          >
+            Thư mục Ảnh Báo cáo (/img/ — Đủ 7 Hình)
+          </button>
+          <button
+            type="button"
             onClick={() => setActiveFilter('ch1_2')}
             className={`border border-black px-3 py-1 font-medium transition-colors ${
               activeFilter === 'ch1_2' ? 'bg-black text-white' : 'bg-white text-black hover:bg-neutral-100'
@@ -88,6 +98,13 @@ ${reportContainerRef.current.innerHTML}
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
+          <a
+            href="/img/Tat_Ca_Hinh_Anh_Bao_Cao_MHK.zip"
+            download="Tat_Ca_Hinh_Anh_Bao_Cao_MHK.zip"
+            className="border border-black bg-black px-3 py-1.5 font-semibold text-white hover:bg-neutral-800 whitespace-nowrap shrink-0"
+          >
+            Tải Trọn bộ Ảnh (/img/.ZIP)
+          </a>
           <a
             href="/assets/aistudio/an_to_n_th_ng_tin_a03d95f8"
             download="De_Cuong_Chi_Tiet_MHK_Da_Cap_Nhat_Chuong_3_4.txt"
@@ -112,10 +129,18 @@ ${reportContainerRef.current.innerHTML}
         </div>
       </div>
 
+      {activeFilter === 'img_gallery' && (
+        <div className="mx-auto max-w-5xl">
+          <ReportImageGallery />
+        </div>
+      )}
+
       {/* Main Academic Paper Container - Strict Black & White Academic Form (Times New Roman / 13pt equivalent) */}
       <article
         ref={reportContainerRef}
-        className="mx-auto max-w-5xl border border-black bg-white p-8 md:p-12 text-black leading-relaxed"
+        className={`mx-auto max-w-5xl border border-black bg-white p-8 md:p-12 text-black leading-relaxed ${
+          activeFilter === 'img_gallery' ? 'hidden print:block' : ''
+        }`}
         style={{ fontFamily: "'Times New Roman', 'Source Serif 4', Times, serif" }}
       >
         {/* ================================================================
